@@ -8,17 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.localproject.data.modle.Task
 import com.example.localproject.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FragmentHome : Fragment(), AddTaskDialog.AddTask {
+class FragmentHome : Fragment(), AddTaskDialog.AddTask, AdapterHome.ClickTask {
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _binding!!
 
-    private val adapterHome = AdapterHome()
+    private val adapterHome = AdapterHome(this)
     private val viewModel: HomeViewModel by viewModels()
     private val dialogAddTaskDialog = AddTaskDialog(this)
     override fun onCreateView(
@@ -34,6 +33,11 @@ class FragmentHome : Fragment(), AddTaskDialog.AddTask {
         super.onViewCreated(view, savedInstanceState)
         onClick()
         setRecyclerView()
+        getTasks()
+    }
+
+    private fun getTasks() {
+        adapterHome.tasks = viewModel.getTasks() as ArrayList<Task>
     }
 
     private fun setRecyclerView() {
@@ -51,5 +55,23 @@ class FragmentHome : Fragment(), AddTaskDialog.AddTask {
 
     override fun addTask(task: Task) {
         viewModel.addTask(task)
+        getTasks()
+    }
+
+    override fun update(task: Task) {
+        viewModel.updateTask(task)
+    }
+
+    override fun removeTask(task: Task) {
+        viewModel.removeTask(task)
+        getTasks()
+    }
+
+    override fun getTask(task: Task) {
+        val bundle=Bundle().apply {
+            putParcelable("task",task)
+        }
+        dialogAddTaskDialog.arguments=bundle
+        dialogAddTaskDialog.show(childFragmentManager,null)
     }
 }

@@ -8,4 +8,8 @@ interface HomeRepository {
     fun getTask(taskId: Long): Task
 
     fun getTasks(): List<Task>
+
+    fun updateTask(task:Task)
+
+    fun removeTask(task: Task)
 }

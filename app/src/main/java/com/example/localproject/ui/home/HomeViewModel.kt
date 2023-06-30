@@ -12,4 +12,16 @@ class HomeViewModel @Inject constructor(val homeRepository: HomeRepository):View
     fun addTask(task: Task){
         homeRepository.addTask(task)
     }
+
+    fun getTasks():List<Task>{
+        return homeRepository.getTasks()
+    }
+
+    fun updateTask(task: Task){
+        homeRepository.updateTask(task)
+    }
+
+    fun removeTask(task: Task){
+        homeRepository.removeTask(task)
+    }
 }
