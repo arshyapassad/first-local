@@ -3,13 +3,14 @@ package com.example.localproject.data.db
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
 import com.example.localproject.data.modle.Task
 
 @Dao
 interface TaskDao {
-    @Insert
+    @Insert(onConflict = REPLACE)
     fun addTask(task: Task)
 
     @Update

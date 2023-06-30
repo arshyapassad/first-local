@@ -14,13 +14,13 @@ import com.example.localproject.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FragmentHome : Fragment() {
+class FragmentHome : Fragment(), AddTaskDialog.AddTask {
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _binding!!
 
     private val adapterHome = AdapterHome()
     private val viewModel: HomeViewModel by viewModels()
-
+    private val dialogAddTaskDialog = AddTaskDialog(this)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,8 +45,11 @@ class FragmentHome : Fragment() {
 
     private fun onClick() {
         binding.fabHomeFragmentAddTask.setOnClickListener {
-            val task=Task(nameTask = "rahim", isChecked = false,)
-            viewModel.addTask(task)
+            dialogAddTaskDialog.show(parentFragmentManager, null)
         }
+    }
+
+    override fun addTask(task: Task) {
+        viewModel.addTask(task)
     }
 }

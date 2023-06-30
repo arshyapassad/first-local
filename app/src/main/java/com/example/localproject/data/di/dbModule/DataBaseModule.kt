@@ -18,6 +18,6 @@ object DataBaseModule {
     @Singleton
     @Provides
     fun provideDataBase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).build()
+        Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).allowMainThreadQueries().build()
 
 }
