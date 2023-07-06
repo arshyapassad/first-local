@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.localproject.data.modle.Task
 import com.example.localproject.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FragmentHome : Fragment(), AddTaskDialog.AddTask, AdapterHome.ClickTask {
@@ -37,7 +40,11 @@ class FragmentHome : Fragment(), AddTaskDialog.AddTask, AdapterHome.ClickTask {
     }
 
     private fun getTasks() {
-        adapterHome.tasks = viewModel.getTasks() as ArrayList<Task>
+        viewModel.getTasks().observe(viewLifecycleOwner) {
+            it?.let {
+                adapterHome.tasks = it as ArrayList<Task>
+            }
+        }
     }
 
     private fun setRecyclerView() {
@@ -54,8 +61,11 @@ class FragmentHome : Fragment(), AddTaskDialog.AddTask, AdapterHome.ClickTask {
     }
 
     override fun addTask(task: Task) {
-        viewModel.addTask(task)
-        getTasks()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.addTask(task)
+            delay(1000)
+            getTasks()
+        }
     }
 
     override fun update(task: Task) {
@@ -63,15 +73,18 @@ class FragmentHome : Fragment(), AddTaskDialog.AddTask, AdapterHome.ClickTask {
     }
 
     override fun removeTask(task: Task) {
-        viewModel.removeTask(task)
-        getTasks()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.removeTask(task)
+            delay(1000)
+            getTasks()
+        }
     }
 
     override fun getTask(task: Task) {
-        val bundle=Bundle().apply {
-            putParcelable("task",task)
+        val bundle = Bundle().apply {
+            putParcelable("task", task)
         }
-        dialogAddTaskDialog.arguments=bundle
-        dialogAddTaskDialog.show(childFragmentManager,null)
+        dialogAddTaskDialog.arguments = bundle
+        dialogAddTaskDialog.show(childFragmentManager, null)
     }
 }

@@ -11,17 +11,17 @@ import com.example.localproject.data.modle.Task
 @Dao
 interface TaskDao {
     @Insert(onConflict = REPLACE)
-    fun addTask(task: Task)
+    suspend fun addTask(task: Task)
 
     @Update
-    fun updateTask(task: Task)
+    suspend fun updateTask(task: Task)
 
     @Delete
-    fun deleteTask(task: Task)
+    suspend fun deleteTask(task: Task)
 
     @Query("SELECT * FROM tbl_task")
-    fun getTasks():List<Task>
+    suspend fun getTasks():List<Task>
 
     @Query("SELECT * FROM tbl_task WHERE id=:id")
-    fun getTask(id:Long): Task
+    suspend fun getTask(id:Long): Task
 }

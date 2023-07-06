@@ -3,13 +3,13 @@ package com.example.localproject.data.repository.homeRepository
 import com.example.localproject.data.modle.Task
 
 interface HomeRepository {
-    fun addTask(task: Task)
+    suspend fun addTask(task: Task)
 
-    fun getTask(taskId: Long): Task
+    suspend fun getTask(taskId: Long): Task
 
-    fun getTasks(): List<Task>
+    suspend fun getTasks(): List<Task>
 
-    fun updateTask(task:Task)
+    suspend fun updateTask(task:Task)
 
-    fun removeTask(task: Task)
+    suspend fun removeTask(task: Task)
 }
