@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
 import com.example.localproject.data.modle.Task
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
@@ -20,7 +21,7 @@ interface TaskDao {
     suspend fun deleteTask(task: Task)
 
     @Query("SELECT * FROM tbl_task")
-    suspend fun getTasks():List<Task>
+    fun getTasks():Flow<List<Task>>
 
     @Query("SELECT * FROM tbl_task WHERE id=:id")
     suspend fun getTask(id:Long): Task

@@ -1,6 +1,7 @@
 package com.example.localproject.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +13,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.localproject.data.modle.Task
 import com.example.localproject.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FragmentHome : Fragment(), AddTaskDialog.AddTask, AdapterHome.ClickTask {
+class FragmentHome : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _binding!!
 
-    private val adapterHome = AdapterHome(this)
+    private val adapterHome = AdapterHome(updateTask = {
+        update(it)
+    }, removeTask = {
+        removeTask(it)
+    }, getTask = {
+        getTask(it)
+    })
     private val viewModel: HomeViewModel by viewModels()
-    private val dialogAddTaskDialog = AddTaskDialog(this)
+    private val dialogAddTaskDialog = AddTaskDialog(addTask = {
+        addTask(it)
+    })
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,31 +69,23 @@ class FragmentHome : Fragment(), AddTaskDialog.AddTask, AdapterHome.ClickTask {
 
     private fun onClick() {
         binding.fabHomeFragmentAddTask.setOnClickListener {
-            dialogAddTaskDialog.show(parentFragmentManager, null)
+            dialogAddTaskDialog.show(childFragmentManager, null)
         }
     }
 
-    override fun addTask(task: Task) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.addTask(task)
-            delay(1000)
-            getTasks()
-        }
+    private fun addTask(task: Task) {
+        viewModel.addTask(task)
     }
 
-    override fun update(task: Task) {
+    private fun update(task: Task) {
         viewModel.updateTask(task)
     }
 
-    override fun removeTask(task: Task) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.removeTask(task)
-            delay(1000)
-            getTasks()
-        }
+    private fun removeTask(task: Task) {
+        viewModel.removeTask(task)
     }
 
-    override fun getTask(task: Task) {
+    private fun getTask(task: Task) {
         val bundle = Bundle().apply {
             putParcelable("task", task)
         }

@@ -9,15 +9,16 @@ import androidx.fragment.app.DialogFragment
 import com.example.localproject.data.modle.Task
 import com.example.localproject.databinding.AddTaskDialogBinding
 
-class AddTaskDialog(val addTask: AddTask) : DialogFragment() {
+class AddTaskDialog(val addTask: (Task) -> Unit) :
+    DialogFragment() {
     var _binding: AddTaskDialogBinding? = null
     val binding get() = _binding!!
     var task: Task? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        arguments?.let {
-            task = it.getParcelable("task")
-        }
+//        arguments?.let {
+//            task = it.getParcelable("task")
+//        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -54,16 +55,17 @@ class AddTaskDialog(val addTask: AddTask) : DialogFragment() {
             Task(nameTask = nameTask, isChecked = false)
         }
 
-        task?.let { addTask.addTask(it) }
-    }
-
-    interface AddTask {
-        fun addTask(task: Task)
+        task?.let { addTask(it) }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        task = null
-        arguments = null
+//        task = null
+//        arguments = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
